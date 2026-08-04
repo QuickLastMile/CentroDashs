@@ -308,10 +308,11 @@ const SHEET_ID  = '1QRFSnvtoog_Ei8LZel256vKPAqvn9Y_NVyB-U6gIuGc';
 const SHEET_GID = '0';
 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
 
-/* PIN de gerencia — se guarda el hash SHA-256, nunca el PIN en texto plano.
+/* PIN de gerencia — se guarda el hash SHA-256, nunca el PIN en texto plano
+   (tampoco en los comentarios: quien lea este archivo no debe deducirlo).
    Para cambiarlo: abre la consola del navegador (F12) en esta página, ejecuta
-   await hashPin('elNuevoPin') y pega aquí el resultado. PIN actual: 4821 */
-const PIN_HASH = 'a388f562e286fdf28986f9253579f4d096446e01dd0c771996a51ff11b390fa2';
+   await hashPin('elNuevoPin') y pega aquí el resultado. */
+const PIN_HASH = '9dc6abc967dad3e2d115d25bdcb5b998f06ebda87c5f784800698d7cc1b2273d';
 /* Valores de la columna ACCESO del Sheet que marcan un informe como privado */
 const MARCAS_PRIVADO = ['PRIVADO','PRIVADA','RESTRINGIDO','GERENCIAL','SI','X','BLOQUEADO'];
 
