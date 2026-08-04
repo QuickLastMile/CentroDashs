@@ -73,6 +73,14 @@
   }
   .buscador input::placeholder{color:#8A8A8A}
   .buscador input:focus{outline:none;box-shadow:0 0 0 2px var(--amarillo)}
+  /* La ✕ nativa de type=search viene oscura: se repinta con el color del texto */
+  .buscador input::-webkit-search-cancel-button{
+    -webkit-appearance:none;appearance:none;width:13px;height:13px;cursor:pointer;opacity:.55;
+    background:currentColor;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .buscador input::-webkit-search-cancel-button:hover{opacity:1}
 
   .grupo-btn{display:flex;background:var(--panel);border:1px solid #2c2c2c;border-radius:10px;padding:3px;gap:3px}
   .grupo-btn button{
@@ -258,7 +266,11 @@
   <div class="fila">
     <div class="buscador">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-      <input id="busqueda" type="text" placeholder="Buscar proyecto, jefe, líder o CECO…" autocomplete="off">
+      <!-- type=search + los data-* evitan que Chrome y los gestores de
+           contraseñas lo confundan con un campo de usuario y lo autorrellenen -->
+      <input id="busqueda" type="search" name="cd-filtro" placeholder="Buscar proyecto, jefe, líder o CECO…"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             data-lpignore="true" data-1p-ignore data-form-type="other">
     </div>
     <div class="grupo-btn" id="agrupar">
       <button data-modo="jefe" class="on">Por jefe</button>
@@ -289,7 +301,10 @@
     </div>
     <h4>Informe restringido</h4>
     <p><b id="pinProyecto"></b><br>Ingresa el PIN de gerencia para continuar.</p>
-    <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="••••">
+    <!-- one-time-code: el navegador lo trata como clave de un solo uso, no como
+         contraseña de cuenta, y deja de buscarle un campo de usuario asociado -->
+    <input id="pinInput" type="password" name="cd-pin" inputmode="numeric" maxlength="12" placeholder="••••"
+           autocomplete="one-time-code" data-lpignore="true" data-1p-ignore data-form-type="other">
     <p class="pin-error" id="pinError"></p>
     <div class="pin-btns">
       <button id="pinCancelar">Cancelar</button>
