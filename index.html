@@ -126,6 +126,13 @@
     background:rgba(10,10,10,.6);border:1px solid #3a3a3a;color:#7a7a7a;
   }
   .fav.on{color:var(--amarillo);border-color:var(--amarillo)}
+  .candado{
+    position:absolute;top:12px;left:46px;z-index:3;height:28px;padding:0 10px;border-radius:999px;
+    display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+    background:rgba(10,10,10,.7);border:1px solid var(--amarillo);color:var(--amarillo);
+  }
+  .tarjeta.privada .cabecera img.logo,
+  .tarjeta.privada .cabecera .icono{filter:blur(3px) grayscale(.4);opacity:.75}
   .cuerpo{padding:15px 17px 17px;display:flex;flex-direction:column;gap:7px;flex:1}
   .etiqueta{
     align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;
@@ -140,6 +147,8 @@
     padding:9px 0;border-radius:999px;
   }
   .abrir.off{background:#1e1e1e;color:#6a6a6a;border:1px dashed #3a3a3a}
+  button.abrir{font:inherit;font-size:13px;font-weight:700;border:none;cursor:pointer}
+  button.abrir.bloqueada{background:#241f05;color:var(--amarillo);border:1px solid var(--amarillo)}
   .accion{
     width:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;border-radius:999px;
     cursor:pointer;background:#1c1c1c;border:1px solid #333;color:#c9c9c9;
@@ -167,6 +176,46 @@
   }
   .modal-cab a:hover,.modal-cab button:hover{border-color:var(--amarillo)}
   .modal iframe{flex:1;width:100%;border:1px solid #2c2c2c;border-radius:14px;background:#fff}
+
+  /* Diálogo del PIN de gerencia */
+  .pin-fondo{
+    position:fixed;inset:0;z-index:70;background:rgba(5,5,5,.88);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:20px;
+  }
+  .pin-fondo.on{display:flex}
+  .pin-caja{
+    width:340px;max-width:100%;background:var(--panel);border:1px solid #2c2c2c;border-radius:20px;
+    padding:26px 24px;text-align:center;
+  }
+  .pin-caja .llave{
+    width:52px;height:52px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(245,196,0,.12);border:1px solid rgba(245,196,0,.45);color:var(--amarillo);
+  }
+  .pin-caja h4{margin:0 0 6px;font-size:17px;color:#fff}
+  .pin-caja p{margin:0 0 18px;font-size:13px;color:var(--tenue);line-height:1.45}
+  .pin-caja p b{color:#e5e5e5}
+  .pin-caja input{
+    width:100%;text-align:center;letter-spacing:8px;font:inherit;font-size:22px;font-weight:700;
+    padding:12px;border-radius:12px;border:1px solid #2c2c2c;background:#0f0f0f;color:#fff;
+  }
+  .pin-caja input:focus{outline:none;box-shadow:0 0 0 2px var(--amarillo)}
+  .pin-caja.error input{border-color:#e05555;animation:sacudir .3s}
+  @keyframes sacudir{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .pin-error{min-height:18px;margin:9px 0 0;font-size:12.5px;color:#e05555;font-weight:600}
+  .pin-btns{display:flex;gap:9px;margin-top:14px}
+  .pin-btns button{
+    flex:1;font:inherit;font-size:13.5px;font-weight:700;padding:11px 0;border-radius:12px;cursor:pointer;
+    border:1px solid #333;background:#1c1c1c;color:#d5d5d5;
+  }
+  .pin-btns button.principal{
+    background:linear-gradient(90deg,var(--amarillo-claro),var(--amarillo));color:#0A0A0A;border:none;
+  }
+  .sesion{
+    display:none;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;cursor:pointer;
+    background:rgba(111,214,111,.1);border:1px solid var(--ok);color:var(--ok);
+    font-size:11.5px;font-weight:700;white-space:nowrap;
+  }
+  .sesion.on{display:flex}
 
   .toast{
     position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:60;
@@ -196,6 +245,10 @@
       </div>
     </div>
     <div class="cifras" id="cifras"></div>
+    <span class="sesion" id="sesion" title="Cerrar el acceso de gerencia">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+      Acceso gerencia · Cerrar
+    </span>
     <button class="btn-refrescar" id="btnRefrescar" title="Volver a leer los datos">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path></svg>
       Actualizar
@@ -229,6 +282,22 @@
   <iframe id="modalFrame" src="about:blank" referrerpolicy="no-referrer"></iframe>
 </div>
 
+<div class="pin-fondo" id="pinFondo">
+  <div class="pin-caja" id="pinCaja">
+    <div class="llave">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    </div>
+    <h4>Informe restringido</h4>
+    <p><b id="pinProyecto"></b><br>Ingresa el PIN de gerencia para continuar.</p>
+    <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="••••">
+    <p class="pin-error" id="pinError"></p>
+    <div class="pin-btns">
+      <button id="pinCancelar">Cancelar</button>
+      <button id="pinAceptar" class="principal">Desbloquear</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -238,6 +307,13 @@
 const SHEET_ID  = '1QRFSnvtoog_Ei8LZel256vKPAqvn9Y_NVyB-U6gIuGc';
 const SHEET_GID = '0';
 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+
+/* PIN de gerencia — se guarda el hash SHA-256, nunca el PIN en texto plano.
+   Para cambiarlo: abre la consola del navegador (F12) en esta página, ejecuta
+   await hashPin('elNuevoPin') y pega aquí el resultado. PIN actual: 4821 */
+const PIN_HASH = 'a388f562e286fdf28986f9253579f4d096446e01dd0c771996a51ff11b390fa2';
+/* Valores de la columna ACCESO del Sheet que marcan un informe como privado */
+const MARCAS_PRIVADO = ['PRIVADO','PRIVADA','RESTRINGIDO','GERENCIAL','SI','X','BLOQUEADO'];
 
 const ICONOS = {
   camion:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>',
@@ -254,6 +330,10 @@ const DEGRADADOS = [
 let PROYECTOS = [];
 const estado = { q:'', modo:'jefe', jefe:'todos', tipo:'todos' };
 const FAVS = new Set(JSON.parse(localStorage.getItem('cd_favs') || '[]'));
+
+/* El desbloqueo dura solo la sesión del navegador: al cerrar la pestaña
+   vuelve a pedir el PIN. Nunca se guarda el PIN, solo la marca de acceso. */
+let desbloqueado = sessionStorage.getItem('cd_acceso') === '1';
 
 /* ── Utilidades ── */
 const norm = s => (s||'').toString().trim();
@@ -282,6 +362,68 @@ function avisar(msg){
   t.classList.add('on');
   clearTimeout(avisar._t);
   avisar._t = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ── PIN de gerencia ─────────────────────────────────────────────
+   Aviso honesto: el Sheet de origen es público, así que esto restringe
+   quién ve y comparte los enlaces desde la página, no impide que alguien
+   con conocimientos técnicos llegue al dato por otra vía. */
+async function hashPin(pin){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let accionPendiente = null;   // qué hacer apenas se valide el PIN
+
+function pedirPin(proyecto, accion){
+  accionPendiente = accion;
+  document.getElementById('pinProyecto').textContent = capitalizar(proyecto);
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('pinCaja').classList.remove('error');
+  const inp = document.getElementById('pinInput');
+  inp.value = '';
+  document.getElementById('pinFondo').classList.add('on');
+  setTimeout(() => inp.focus(), 60);
+}
+
+function cerrarPin(){
+  document.getElementById('pinFondo').classList.remove('on');
+  accionPendiente = null;
+}
+
+async function validarPin(){
+  const inp = document.getElementById('pinInput');
+  const caja = document.getElementById('pinCaja');
+  if(!inp.value.trim()) return;
+
+  if(await hashPin(inp.value.trim()) !== PIN_HASH){
+    caja.classList.add('error');
+    document.getElementById('pinError').textContent = 'PIN incorrecto. Intenta de nuevo.';
+    inp.value = ''; inp.focus();
+    setTimeout(() => caja.classList.remove('error'), 400);
+    return;
+  }
+
+  desbloqueado = true;
+  sessionStorage.setItem('cd_acceso', '1');
+  const accion = accionPendiente;
+  cerrarPin();
+  pintarSesion();
+  pintar();
+  avisar('Acceso concedido a los informes restringidos');
+  if(accion) accion();
+}
+
+function cerrarSesionGerencia(){
+  desbloqueado = false;
+  sessionStorage.removeItem('cd_acceso');
+  pintarSesion();
+  pintar();
+  avisar('Acceso de gerencia cerrado');
+}
+
+function pintarSesion(){
+  document.getElementById('sesion').classList.toggle('on', desbloqueado);
 }
 
 /* Copia al portapapeles con respaldo para navegadores sin permiso directo */
@@ -317,7 +459,8 @@ async function cargar(){
     const cols = json.table.cols.map(c => norm(c.label).toUpperCase());
     const idx  = etiqueta => cols.findIndex(c => c.startsWith(etiqueta));
     const iTipo = idx('TIPO'), iJefe = idx('JEFE'), iLider = idx('LIDER'),
-          iCeco = idx('CECO'), iProy = idx('PROYECTO'), iLogo = idx('LOGO'), iInf = idx('INFORME');
+          iCeco = idx('CECO'), iProy = idx('PROYECTO'), iLogo = idx('LOGO'),
+          iInf = idx('INFORME'), iAcc = idx('ACCESO');
 
     const celda = (fila,i) => (i < 0 || !fila.c || !fila.c[i]) ? '' : norm(fila.c[i].f ?? fila.c[i].v);
 
@@ -331,6 +474,7 @@ async function cargar(){
         proyecto: celda(fila,iProy),
         logo:     sacarLogo(celda(fila,iLogo)),
         informe:  celda(fila,iInf),
+        privado:  MARCAS_PRIVADO.includes(celda(fila,iAcc).toUpperCase()),
         deg:      DEGRADADOS[n % DEGRADADOS.length]
       }))
       .filter(p => p.proyecto);
@@ -408,17 +552,22 @@ function pintarChips(){
 const SVG_COPIAR = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
 const SVG_LISTO  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>';
 
+const SVG_CANDADO = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+
 function tarjeta(p){
   const tiene = !!p.informe;
   const fav   = FAVS.has(clave(p));
+  // Bloqueada = marcada como privada en el Sheet y sin PIN validado en esta sesión
+  const bloq  = p.privado && !desbloqueado;
   const visual = p.logo
     ? `<img class="logo" src="${escapar(p.logo)}" alt="" loading="lazy" data-tipo="${escapar(p.tipo)}">`
     : `<div class="icono">${p.tipo === 'GERENCIAL' ? ICONOS.grafica : ICONOS.camion}</div>`;
 
   return `
-  <article class="tarjeta" data-id="${p.id}">
+  <article class="tarjeta ${bloq?'privada':''}" data-id="${p.id}">
     <div class="cabecera" style="background:${p.deg}">
       <span class="fav ${fav?'on':''}" data-fav="${p.id}" title="Marcar como favorito">${fav?'★':'☆'}</span>
+      ${p.privado ? `<span class="candado" title="${bloq?'Requiere PIN de gerencia':'Restringido · desbloqueado en esta sesión'}">${SVG_CANDADO}${bloq?'PRIVADO':'ABIERTO'}</span>` : ''}
       <span class="estado ${tiene?'ok':'pend'}">${tiene ? 'Con dashboard' : 'Pendiente'}</span>
       ${visual}
     </div>
@@ -433,13 +582,18 @@ function tarjeta(p){
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"></path><path d="M4 21v-2a4 4 0 0 1 3-3.87"></path><circle cx="12" cy="7" r="4"></circle></svg>
         <span>Líder: ${escapar(capitalizar(p.lider))}</span></div>` : ''}
       <div class="acciones">
-        ${tiene
-          ? `<a class="abrir" href="${escapar(p.informe)}" target="_blank" rel="noopener">Abrir dashboard
-               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a>
-             <span class="accion" data-copiar="${p.id}" title="Copiar enlace para compartir">${SVG_COPIAR}</span>
-             <span class="accion" data-previa="${p.id}" title="Vista rápida sin salir de la página">
-               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>`
-          : `<span class="abrir off">Sin informe cargado</span>`}
+        ${!tiene
+          ? `<span class="abrir off">Sin informe cargado</span>`
+          : (bloq
+            // Bloqueada: botón sin href — la URL no queda en el HTML hasta desbloquear
+            ? `<button class="abrir bloqueada" data-abrir="${p.id}">${SVG_CANDADO} Requiere PIN</button>`
+            : `<a class="abrir" href="${escapar(p.informe)}" target="_blank" rel="noopener">Abrir dashboard
+                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a>`)
+          }
+        ${tiene ? `
+             <span class="accion" data-copiar="${p.id}" title="${bloq?'Copiar enlace · requiere PIN':'Copiar enlace para compartir'}">${bloq ? SVG_CANDADO : SVG_COPIAR}</span>
+             <span class="accion" data-previa="${p.id}" title="${bloq?'Vista rápida · requiere PIN':'Vista rápida sin salir de la página'}">
+               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>` : ''}
       </div>
     </div>
   </article>`;
@@ -506,17 +660,34 @@ function pintar(){
     pintar();
   });
 
-  cont.querySelectorAll('[data-copiar]').forEach(el => el.onclick = async () => {
+  // Abrir un informe restringido: pide el PIN y luego lo abre
+  cont.querySelectorAll('[data-abrir]').forEach(el => el.onclick = () => {
+    const p = PROYECTOS.find(x => x.id === el.dataset.abrir);
+    pedirPin(p.proyecto, () => {
+      if(!window.open(p.informe, '_blank', 'noopener')){
+        avisar('Desbloqueado. Vuelve a pulsar “Abrir dashboard”.');
+      }
+    });
+  });
+
+  cont.querySelectorAll('[data-copiar]').forEach(el => el.onclick = () => {
     const p = PROYECTOS.find(x => x.id === el.dataset.copiar);
-    await copiar(p.informe);
-    el.innerHTML = SVG_LISTO;
-    el.classList.add('copiado');
-    avisar('Enlace copiado: ' + capitalizar(p.proyecto));
-    setTimeout(() => { el.innerHTML = SVG_COPIAR; el.classList.remove('copiado'); }, 1600);
+    const hacer = async () => {
+      await copiar(p.informe);
+      const btn = document.querySelector(`[data-copiar="${p.id}"]`);
+      if(btn){
+        btn.innerHTML = SVG_LISTO;
+        btn.classList.add('copiado');
+        setTimeout(() => { btn.innerHTML = SVG_COPIAR; btn.classList.remove('copiado'); }, 1600);
+      }
+      avisar('Enlace copiado: ' + capitalizar(p.proyecto));
+    };
+    (p.privado && !desbloqueado) ? pedirPin(p.proyecto, hacer) : hacer();
   });
 
   cont.querySelectorAll('[data-previa]').forEach(el => el.onclick = () => {
-    abrirModal(PROYECTOS.find(x => x.id === el.dataset.previa));
+    const p = PROYECTOS.find(x => x.id === el.dataset.previa);
+    (p.privado && !desbloqueado) ? pedirPin(p.proyecto, () => abrirModal(p)) : abrirModal(p);
   });
 }
 
@@ -543,11 +714,20 @@ document.getElementById('agrupar').addEventListener('click', e => {
 document.getElementById('btnRefrescar').onclick = cargar;
 document.getElementById('modalCerrar').onclick  = cerrarModal;
 document.getElementById('modal').addEventListener('click', e => { if(e.target.id === 'modal') cerrarModal(); });
+document.getElementById('pinAceptar').onclick   = validarPin;
+document.getElementById('pinCancelar').onclick  = cerrarPin;
+document.getElementById('sesion').onclick       = cerrarSesionGerencia;
+document.getElementById('pinInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') validarPin();
+});
+document.getElementById('pinFondo').addEventListener('click', e => { if(e.target.id === 'pinFondo') cerrarPin(); });
+
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') cerrarModal();
+  if(e.key === 'Escape'){ cerrarModal(); cerrarPin(); }
   if(e.key === '/' && document.activeElement.id !== 'busqueda'){ e.preventDefault(); document.getElementById('busqueda').focus(); }
 });
 
+pintarSesion();
 cargar();
 setInterval(cargar, 5 * 60 * 1000);   // refresco automático cada 5 minutos
 </script>
